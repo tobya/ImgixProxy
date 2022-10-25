@@ -14,10 +14,9 @@ class ImgixProxyController extends Controller
     //
 
     public  function proxy(){
-//https://bcsstudentimages.imgix.net/nobody.jpg?h=106&w=106&fit=facearea&facepad=2.3
-    //https://bcsstudentimages.imgix.net/6026717.jpg?h=106&w=106&fit=facearea&facepad=2.3
+
        $url = \Spatie\Url\Url::fromString(url()->full());
-       $url2 = $url->withHost('bcsstudentimages.imgix.net')->withScheme('https')->withPort(null);
+       $url2 = $url->withHost(config('services.imgix.host'))->withScheme('https')->withPort(null);
        $id = Hash::make($url2);
        $publicdir = Storage::build(public_path());
        $publicdir->makeDirectory('/files/');
@@ -38,7 +37,7 @@ class ImgixProxyController extends Controller
     public  function image(){
 
        $url = \Spatie\Url\Url::fromString(url()->full());
-       $url2 = $url->withHost('bcsstudentimages.imgix.net')
+       $url2 = $url->withHost(config('services.imgix.host'))
                     ->withScheme('https')
                     ->withPort(null);
 
