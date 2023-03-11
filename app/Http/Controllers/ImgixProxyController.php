@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-
+use function PHPUnit\Framework\directoryExists;
 
 
 class ImgixProxyController extends Controller
@@ -40,10 +40,15 @@ class ImgixProxyController extends Controller
        $url2 = $url->withHost(config('services.imgix.host'))
                     ->withScheme('https')
                     ->withPort(null);
+       $id =  urlencode(str($url->getPath())->after('/') . $url->getQuery());
 
-       $id = md5($url2);
        $publicdir = Storage::build(public_path());
-       $fn = '/files/'. $id . '.jpg';
+       $dir = "/files/" . str($id)->substr(0,1) . "/" . str($id)->substr(1,3) . "/";
+       $publicdir->makeDirectory($dir);
+
+       $fn = $dir . $id . '.jpg';
+       // ddd($fn);
+
        if ($publicdir->exists($fn)){
            return response()->file($publicdir->path($fn),['cache-control' => 'max-age=86400']);
        }
